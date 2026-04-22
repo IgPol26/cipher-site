@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐯 Тигриный шифр | Шифратор для секретных сообщений</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 40px;
+            padding: 25px;
+            text-align: center;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .tiger-icon {
+            font-size: 60px;
+            animation: bounce 2s ease infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: #f97316;
+            font-size: 32px;
+            margin: 10px 0;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .tiger-fact {
+            background: #fff3e0;
+            border-radius: 20px;
+            padding: 12px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #d97706;
+        }
+
+        .main-card {
+            background: white;
+            border-radius: 30px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            padding: 10px 25px;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            color: #999;
+            border-radius: 25px;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: #f97316;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        textarea, input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.3s;
+        }
+
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249,115,22,0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 20px 0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .btn-orange {
+            background: linear-gradient(135deg, #f97316, #ef4444);
+            color: white;
+        }
+
+        .btn-orange:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(249,115,22,0.3);
+        }
+
+        .btn-gray {
+            background: #f0f0f0;
+            color: #666;
+        }
+
+        .btn-gray:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-green {
+            background: #10b981;
+            color: white;
+        }
+
+        .example-box {
+            background: #fff3e0;
+            border-radius: 20px;
+            padding: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #f97316;
+        }
+
+        .example-box h4 {
+            color: #d97706;
+            margin-bottom: 10px;
+        }
+
+        .example-text {
+            font-family: monospace;
+            background: white;
+            padding: 10px;
+            border-radius: 12px;
+            margin: 10px 0;
+        }
+
+        .key-hint {
+            background: #fef3c7;
+            border-radius: 15px;
+            padding: 12px;
+            margin: 15px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .alphabet-show {
+            background: #f8f9fa;
+            border-radius: 20px;
+            padding: 15px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 12px;
+            word-break: break-all;
+            display: none;
+        }
+
+        .status {
+            padding: 12px;
+            border-radius: 15px;
+            margin: 15px 0;
+            text-align: center;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .install-section {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border-radius: 30px;
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .install-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 25px;
+            max-width: 300px;
+            margin: 20px auto;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .install-card:hover {
+            background: rgba(255,255,255,0.2);
+            transform: scale(1.02);
+        }
+
+        .install-icon {
+            font-size: 64px;
+            margin-bottom: 15px;
+        }
+
+        .install-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .install-card p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+
+        .feature {
+            text-align: center;
+        }
+
+        .feature-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 25px;
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 12px; }
+            h1 { font-size: 24px; }
+            .tiger-icon { font-size: 45px; }
+            .install-card { padding: 20px; margin: 15px auto; }
+        }
+    </style>
+    
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript">
+    (function(m,e,t,r,i,k,a){
+        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=108716355', 'ym');
+
+    ym(108716355, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+</script>
+<noscript><div><img src="https://mc.yandex.ru/watch/108716355" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+<!-- /Yandex.Metrika counter -->
+
+
+
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="tiger-icon">🐯</div>
+            <h1>Тигриный шифр</h1>
+            <div class="subtitle">Преврати свои секреты в тигриный язык!</div>
+            <div class="tiger-fact">
+                🐅 У каждого тигра уникальные полоски, как и у твоего ключа шифра!
+            </div>
+        </div>
+
+        <div class="main-card">
+            <div class="tabs">
+                <button class="tab-btn active" onclick="switchTab('encrypt')">🔒 Зашифровать</button>
+                <button class="tab-btn" onclick="switchTab('decrypt')">🔓 Расшифровать</button>
+                <button class="tab-btn" onclick="switchTab('info')">📖 Как работает</button>
+            </div>
+
+            <!-- Вкладка шифрования -->
+            <div id="tabEncrypt" class="tab-content active">
+                <div class="input-group">
+                    <label>📝 Что хочешь зашифровать?</label>
+                    <textarea id="inputText" rows="4" placeholder="Например: Привет, друг! У меня есть секрет..."></textarea>
+                </div>
+
+                <div class="key-hint">
+                    <span>🔑</span>
+                    <span><strong>Твой секретный ключ:</strong> придумай слово из 3-7 букв (например: ТИГР)</span>
+                </div>
+
+                <div class="input-group">
+                    <label>🐅 Тигриный ключ:</label>
+                    <input type="text" id="encryptKey" placeholder="Например: тигр" maxlength="7">
+                </div>
+
+                <div class="example-box">
+                    <h4>🐯 Пример "Тигриного языка"</h4>
+                    <p>Если взять ключ <strong>"ТИГР"</strong> (4 буквы), то:</p>
+                    <div class="example-text">
+                        📖 Обычный текст: <strong>А Б В Г Д Е Ё Ж З ...</strong><br>
+                        🐅 Тигриный язык: <strong>Т И Г Р А Б В Д Ё Ж З ...</strong>
+                    </div>
+                    <p>✏️ Буква <strong>"А"</strong> → <strong>"Т"</strong><br>
+                    ✏️ Буква <strong>"Б"</strong> → <strong>"И"</strong><br>
+                    ✏️ Буква <strong>"В"</strong> → <strong>"Г"</strong><br>
+                    ✏️ Слово <strong>"ПРИВЕТ"</strong> → <strong>"НТИГЕТ"</strong></p>
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-orange" onclick="encrypt()">🐯 Зашифровать</button>
+                    <button class="btn btn-gray" onclick="clearEncrypt()">🗑 Очистить</button>
+                    <button class="btn btn-green" onclick="copyResult('encrypted')">📋 Копировать</button>
+                </div>
+
+                <div class="input-group">
+                    <label>🔒 Зашифрованное сообщение:</label>
+                    <textarea id="encryptedText" rows="4" readonly placeholder="Здесь появится твой тигриный секрет..."></textarea>
+                </div>
+
+                <div id="alphabetDisplay" class="alphabet-show"></div>
+            </div>
+
+            <!-- Вкладка расшифровки -->
+            <div id="tabDecrypt" class="tab-content">
+                <div class="input-group">
+                    <label>🔒 Тигриное сообщение:</label>
+                    <textarea id="decryptInput" rows="4" placeholder="Вставь зашифрованный текст..."></textarea>
+                </div>
+
+                <div class="key-hint">
+                    <span>🔑</span>
+                    <span><strong>Тот же ключ, что использовался для шифрования</strong></span>
+                </div>
+
+                <div class="input-group">
+                    <label>🐅 Тигриный ключ:</label>
+                    <input type="text" id="decryptKey" placeholder="Введи ключ" maxlength="7">
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-orange" onclick="decrypt()">🐯 Расшифровать</button>
+                    <button class="btn btn-gray" onclick="clearDecrypt()">🗑 Очистить</button>
+                    <button class="btn btn-green" onclick="copyResult('decrypted')">📋 Копировать</button>
+                </div>
+
+                <div class="input-group">
+                    <label>📖 Расшифрованное сообщение:</label>
+                    <textarea id="decryptedText" rows="4" readonly placeholder="Здесь появится расшифрованный текст..."></textarea>
+                </div>
+            </div>
+
+            <!-- Вкладка информации -->
+            <div id="tabInfo" class="tab-content">
+                <h3 style="color: #f97316; margin-bottom: 15px;">🐅 Что такое "Тигриный шифр"?</h3>
+                
+                <p style="margin-bottom: 15px; line-height: 1.6;">
+                    Это секретный язык, как у тигров — у каждого свой уникальный узор полосок (ключ)!
+                </p>
+
+                <div style="background: #f0f0f0; border-radius: 20px; padding: 15px; margin: 15px 0;">
+                    <h4>📚 Алфавит (33 буквы):</h4>
+                    <p style="font-family: monospace; font-size: 16px; word-break: break-all;">А Б В Г Д Е Ё Ж З И Й К Л М Н О П Р С Т У Ф Х Ц Ч Ш Щ Ъ Ы Ь Э Ю Я</p>
+                </div>
+
+                <div style="background: #fff3e0; border-radius: 20px; padding: 15px; margin: 15px 0;">
+                    <h4>🐯 Как работает "Тигриный язык"?</h4>
+                    <ol style="margin-left: 20px; line-height: 1.8;">
+                        <li>Ты выбираешь секретный ключ (например, <strong>"ТИГР"</strong>)</li>
+                        <li>Первые буквы алфавита заменяются на буквы ключа</li>
+                        <li>Заменённые буквы отправляются в конец (как хвост у тигра)</li>
+                        <li>Получается новый алфавит — "тигриный язык"</li>
+                        <li>Твоё сообщение переводится на этот язык!</li>
+                    </ol>
+                </div>
+
+                <div style="background: #e8eaf6; border-radius: 20px; padding: 15px;">
+                    <h4>💡 Важно!</h4>
+                    <p>🔑 <strong>Сохрани ключ в секрете!</strong> Без него никто не сможет прочитать твоё сообщение.</p>
+                    <p>📱 Нажми на кнопку ниже, чтобы установить приложение на телефон!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Блок установки приложения (без скачивания файлов) -->
+        <div class="install-section">
+            <h3>📱 Установи приложение на телефон</h3>
+            <p style="margin-top: 10px; opacity: 0.8;">Работает без интернета • Всегда под рукой</p>
+            
+            <div class="install-card" onclick="installPWA()">
+                <div class="install-icon">📲</div>
+                <h3>Установить</h3>
+                <p>Нажмите, чтобы добавить приложение на главный экран</p>
+            </div>
+
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🔒</div>
+                    <div>Бесплатно</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📱</div>
+                    <div>На телефон</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔄</div>
+                    <div>Работает офлайн</div>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🔑</div>
+                    <div>Регистр не важен</div>
+                </div>
+            </div>
+            
+            <p style="margin-top: 15px; font-size: 12px; opacity: 0.6;">
+                ⭐ Бесплатно • Без рекламы • Работает офлайн
+            </p>
+            <p style="margin-top: 10px; font-size: 11px; opacity: 0.5;">
+                📱 На телефоне: откройте Chrome → нажмите на кнопку выше → "Установить"
+            </p>
+        </div>
+
+        <div class="footer">
+            <p>🐯 Тигриный шифр | Создай свой секретный язык</p>
+            <p>🔑 Помни: твой ключ — это твои уникальные тигриные полоски!</p>
+            <p>IgPol©2026</p>
+        </div>
+    </div>
+
+    <script>
+        const FULL_ALPHABET = 'АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ';
+        
+        function createAlphabetFromKey(key) {
+            let cleanKey = key.replace(/[^А-Яа-яЁё]/g, '');
+            const keyUpper = cleanKey.toUpperCase();
+            const replaceCount = keyUpper.length;
+            
+            if (replaceCount < 3 || replaceCount > 7) {
+                throw new Error(`Ключ должен содержать от 3 до 7 букв! Сейчас: ${replaceCount}`);
+            }
+            
+            const uniqueLetters = new Set(keyUpper);
+            if (uniqueLetters.size !== keyUpper.length) {
+                throw new Error('Буквы в ключе не должны повторяться!');
+            }
+            
+            const firstLetters = FULL_ALPHABET.substring(0, replaceCount);
+            let newAlphabet = keyUpper;
+            
+            for (let i = 0; i < replaceCount; i++) {
+                const letter = firstLetters[i];
+                if (!keyUpper.includes(letter)) {
+                    newAlphabet += letter;
+                }
+            }
+            
+            for (let i = replaceCount; i < FULL_ALPHABET.length; i++) {
+                const letter = FULL_ALPHABET[i];
+                if (!keyUpper.includes(letter)) {
+                    newAlphabet += letter;
+                }
+            }
+            
+            return { alphabet: newAlphabet, replaceCount, key: keyUpper, firstLetters };
+        }
+        
+        function encrypt() {
+            try {
+                const inputText = document.getElementById('inputText').value;
+                const key = document.getElementById('encryptKey').value;
+                
+                if (!inputText.trim()) {
+                    showStatus('encrypt', '❌ Напиши что-нибудь для шифрования!', 'error');
+                    return;
+                }
+                if (!key.trim()) {
+                    showStatus('encrypt', '❌ Придумай тигриный ключ (3-7 букв)!', 'error');
+                    return;
+                }
+                
+                const { alphabet, replaceCount, key: cleanKey, firstLetters } = createAlphabetFromKey(key);
+                
+                const alphabetBox = document.getElementById('alphabetDisplay');
+                alphabetBox.style.display = 'block';
+                alphabetBox.innerHTML = `
+                    <strong>🐅 Тигриный алфавит:</strong><br>
+                    ${alphabet.split('').join(' ')}<br>
+                    <small>✨ Заменено первых ${replaceCount} букв (${firstLetters}) на ключ "${cleanKey}"</small>
+                `;
+                
+                let encrypted = '';
+                for (let char of inputText) {
+                    const isUpperCase = char === char.toUpperCase() && char !== char.toLowerCase();
+                    const upperChar = char.toUpperCase();
+                    const index = FULL_ALPHABET.indexOf(upperChar);
+                    if (index !== -1) {
+                        let newChar = alphabet[index];
+                        if (!isUpperCase && newChar !== newChar.toUpperCase()) {
+                            newChar = newChar.toLowerCase();
+                        }
+                        encrypted += newChar;
+                    } else {
+                        encrypted += char;
+                    }
+                }
+                
+                document.getElementById('encryptedText').value = encrypted;
+                showStatus('encrypt', `✅ Зашифровано! Ключ: "${cleanKey}"`, 'success');
+                saveToStorage();
+            } catch (error) {
+                showStatus('encrypt', `❌ ${error.message}`, 'error');
+            }
+        }
+        
+        function decrypt() {
+            try {
+                const encryptedText = document.getElementById('decryptInput').value;
+                const key = document.getElementById('decryptKey').value;
+                
+                if (!encryptedText.trim()) {
+                    showStatus('decrypt', '❌ Вставь зашифрованное сообщение!', 'error');
+                    return;
+                }
+                if (!key.trim()) {
+                    showStatus('decrypt', '❌ Введи ключ для расшифровки!', 'error');
+                    return;
+                }
+                
+                const { alphabet } = createAlphabetFromKey(key);
+                
+                let decrypted = '';
+                for (let char of encryptedText) {
+                    const isUpperCase = char === char.toUpperCase() && char !== char.toLowerCase();
+                    const upperChar = char.toUpperCase();
+                    const index = alphabet.indexOf(upperChar);
+                    if (index !== -1) {
+                        let originalChar = FULL_ALPHABET[index];
+                        if (!isUpperCase && originalChar !== originalChar.toUpperCase()) {
+                            originalChar = originalChar.toLowerCase();
+                        }
+                        decrypted += originalChar;
+                    } else {
+                        decrypted += char;
+                    }
+                }
+                
+                document.getElementById('decryptedText').value = decrypted;
+                showStatus('decrypt', '✅ Расшифровано!', 'success');
+                saveToStorage();
+            } catch (error) {
+                showStatus('decrypt', `❌ ${error.message}`, 'error');
+            }
+        }
+        
+        function showStatus(tab, message, type) {
+            const container = tab === 'encrypt' ? document.getElementById('tabEncrypt') : document.getElementById('tabDecrypt');
+            const oldStatus = container.querySelector('.status');
+            if (oldStatus) oldStatus.remove();
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = message;
+            container.insertBefore(statusDiv, container.firstChild);
+            setTimeout(() => statusDiv.remove(), 3000);
+        }
+        
+        function copyResult(type) {
+            const text = type === 'encrypted' ? document.getElementById('encryptedText').value : document.getElementById('decryptedText').value;
+            if (!text) {
+                alert('❌ Нет текста для копирования!');
+                return;
+            }
+            navigator.clipboard.writeText(text);
+            alert('✅ Текст скопирован!');
+        }
+        
+        function clearEncrypt() {
+            document.getElementById('inputText').value = '';
+            document.getElementById('encryptKey').value = '';
+            document.getElementById('encryptedText').value = '';
+            document.getElementById('alphabetDisplay').style.display = 'none';
+            saveToStorage();
+        }
+        
+        function clearDecrypt() {
+            document.getElementById('decryptInput').value = '';
+            document.getElementById('decryptKey').value = '';
+            document.getElementById('decryptedText').value = '';
+            saveToStorage();
+        }
+        
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            if (tab === 'encrypt') {
+                document.querySelectorAll('.tab-btn')[0].classList.add('active');
+                document.getElementById('tabEncrypt').classList.add('active');
+            } else if (tab === 'decrypt') {
+                document.querySelectorAll('.tab-btn')[1].classList.add('active');
+                document.getElementById('tabDecrypt').classList.add('active');
+            } else {
+                document.querySelectorAll('.tab-btn')[2].classList.add('active');
+                document.getElementById('tabInfo').classList.add('active');
+            }
+        }
+        
+        function saveToStorage() {
+            const data = {
+                inputText: document.getElementById('inputText').value,
+                encryptKey: document.getElementById('encryptKey').value,
+                encryptedText: document.getElementById('encryptedText').value,
+                decryptInput: document.getElementById('decryptInput').value,
+                decryptKey: document.getElementById('decryptKey').value,
+                decryptedText: document.getElementById('decryptedText').value
+            };
+            localStorage.setItem('tigerCipher', JSON.stringify(data));
+        }
+        
+        function loadFromStorage() {
+            const saved = localStorage.getItem('tigerCipher');
+            if (saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    document.getElementById('inputText').value = data.inputText || '';
+                    document.getElementById('encryptKey').value = data.encryptKey || '';
+                    document.getElementById('encryptedText').value = data.encryptedText || '';
+                    document.getElementById('decryptInput').value = data.decryptInput || '';
+                    document.getElementById('decryptKey').value = data.decryptKey || '';
+                    document.getElementById('decryptedText').value = data.decryptedText || '';
+                } catch(e) {}
+            }
+        }
+        
+        // PWA установка
+        function installPWA() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('Приложение установлено');
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                alert('🌐 Как установить приложение:\n\n📱 На телефоне (Chrome):\n1. Нажмите ⋮ в правом верхнем углу\n2. Выберите "Установить приложение"\n3. Нажмите "Установить"\n\n💻 На компьютере (Chrome/Edge):\nНажмите на значок 📱 в адресной строке');
+            }
+        }
+        
+        document.getElementById('encryptKey').addEventListener('input', function(e) {
+            let value = this.value;
+            value = value.replace(/[^А-Яа-яЁё]/g, '');
+            if (value.length > 7) value = value.slice(0, 7);
+            this.value = value;
+            saveToStorage();
+        });
+        
+        document.getElementById('decryptKey').addEventListener('input', function(e) {
+            let value = this.value;
+            value = value.replace(/[^А-Яа-яЁё]/g, '');
+            if (value.length > 7) value = value.slice(0, 7);
+            this.value = value;
+            saveToStorage();
+        });
+        
+        ['inputText', 'encryptKey', 'encryptedText', 'decryptInput', 'decryptKey', 'decryptedText'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', saveToStorage);
+        });
+        
+        document.getElementById('inputText').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                encrypt();
+            }
+        });
+        
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+        
+        loadFromStorage();
+    </script>
+   </body>
+</html>
